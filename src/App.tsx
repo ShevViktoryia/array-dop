@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import { TaskType, Todolist } from "./Todolist";
+import { Todolist } from "./Todolist";
 import { v1 } from "uuid";
 
 type ObjectType = {
@@ -174,13 +174,14 @@ function App() {
   }
 
   function addTask(title: string, todolistId: string) {
-    let task = { id: v1(), title: title, isDone: false };
-    //достанем нужный массив по todolistId:
-    let todolistTasks = tasks[todolistId];
-    // перезапишем в этом объекте массив для нужного тудулиста копией, добавив в начало новую таску:
-    tasks[todolistId] = [task, ...todolistTasks];
-    // засетаем в стейт копию объекта, чтобы React отреагировал перерисовкой
-    setTasks({ ...tasks });
+    let newTask = { taskId: v1(), title: title, isDone: false };
+    setTodos((prevTodos) =>
+      prevTodos.map((todo) =>
+        todo.todolistId === todolistId
+          ? { ...todo, tasks: [...todo.tasks, newTask] }
+          : todo
+      )
+    );
   }
 
   function changeStatus(id: string, isDone: boolean, todolistId: string) {
